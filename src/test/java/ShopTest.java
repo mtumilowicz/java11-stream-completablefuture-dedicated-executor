@@ -17,6 +17,8 @@ public class ShopTest {
 
     @Test
     public void naive() {
+        long start = System.currentTimeMillis();
+        
         List<CompletableFuture<Price>> priceFutures = IntStream.range(1, 300)
                 .parallel()
                 .mapToObj(id -> CompletableFuture.supplyAsync(
@@ -27,10 +29,14 @@ public class ShopTest {
                 .parallel()
                 .map(CompletableFuture::join)
                 .collect(toList());
+
+        System.out.println(System.currentTimeMillis() - start);
     }
 
     @Test
     public void dedicated_pool() {
+        long start = System.currentTimeMillis();
+        
         Executor executor =
                 Executors.newFixedThreadPool(Math.min(300, 100),
                         r -> {
@@ -48,5 +54,7 @@ public class ShopTest {
         List<Price> prices = priceFutures.parallelStream()
                 .map(CompletableFuture::join)
                 .collect(toList());
+
+        System.out.println(System.currentTimeMillis() - start);
     }
 }
