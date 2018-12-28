@@ -2,7 +2,7 @@
 _Reference_: https://www.amazon.com/Modern-Java-Action-functional-programming/dp/1617293563
 
 # project description
-1. We could get ask shop for a price of product (id)
+1. We could ask shop for a price of product (by id)
     ```
     class Shop {
         Price getPrice(int id) {
@@ -23,11 +23,12 @@ _Reference_: https://www.amazon.com/Modern-Java-Action-functional-programming/dp
         }
     }
     ```
-1. we want to ask shop for many ids (for example stream of ids)
+1. we want to ask shop for many ids (for example 
+we have a stream of ids)
 
 # solution
-* naive approach - 
-    * one
+* **naive approach** - scales badly
+    * one product
         ```
         var priceFutures = IntStream.range(1, 2)
                 .parallel()
@@ -41,7 +42,7 @@ _Reference_: https://www.amazon.com/Modern-Java-Action-functional-programming/dp
                 .collect(toList());
         ```
         **time: 203 ms**
-    * four
+    * four products
         ```
         var priceFutures = IntStream.range(1, 4)
                 .parallel()
@@ -55,7 +56,7 @@ _Reference_: https://www.amazon.com/Modern-Java-Action-functional-programming/dp
                 .collect(toList());
         ```
         **time: 203 ms**
-    * scales badly
+    * many products
         ```
         var priceFutures = IntStream.range(1, 30)
                 .parallel()
@@ -69,7 +70,7 @@ _Reference_: https://www.amazon.com/Modern-Java-Action-functional-programming/dp
                 .collect(toList());
         ```
         **time: 2 s**
-* dedicated executor - scales perfectly
+* **dedicated executor** - scales perfectly
     ```
     var executor =
             Executors.newFixedThreadPool(Math.min(300, 100),
@@ -99,7 +100,7 @@ number of threads equal to the one returned by
 
 So we decide to prepare dedicated executor for 
 `CompletableFuture` tasks. How we estimated
-the number of possible threads in a pool?
+the number of threads in a fixed pool?
 From the given formula:
 
 * `Nthreads = NCPU * UCPU * (1 + W/C)`
