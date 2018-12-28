@@ -1,8 +1,6 @@
 import org.junit.Test;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
@@ -18,14 +16,50 @@ public class ShopTest {
     @Test
     public void naive() {
         long start = System.currentTimeMillis();
-        
-        List<CompletableFuture<Price>> priceFutures = IntStream.range(1, 300)
+
+        var priceFutures = IntStream.range(1, 2)
                 .parallel()
                 .mapToObj(id -> CompletableFuture.supplyAsync(
                         () -> shop.getPrice(id)))
                 .collect(toList());
 
-        List<Price> prices = priceFutures.stream()
+        var prices = priceFutures.stream()
+                .parallel()
+                .map(CompletableFuture::join)
+                .collect(toList());
+
+        System.out.println(System.currentTimeMillis() - start);
+    }
+    
+    @Test
+    public void naive_4() {
+        long start = System.currentTimeMillis();
+
+        var priceFutures = IntStream.range(1, 4)
+                .parallel()
+                .mapToObj(id -> CompletableFuture.supplyAsync(
+                        () -> shop.getPrice(id)))
+                .collect(toList());
+
+        var prices = priceFutures.stream()
+                .parallel()
+                .map(CompletableFuture::join)
+                .collect(toList());
+
+        System.out.println(System.currentTimeMillis() - start);
+    }
+
+    @Test
+    public void naive_scalesBadly() {
+        long start = System.currentTimeMillis();
+        
+        var priceFutures = IntStream.range(1, 50)
+                .parallel()
+                .mapToObj(id -> CompletableFuture.supplyAsync(
+                        () -> shop.getPrice(id)))
+                .collect(toList());
+
+        var prices = priceFutures.stream()
                 .parallel()
                 .map(CompletableFuture::join)
                 .collect(toList());
@@ -37,7 +71,7 @@ public class ShopTest {
     public void dedicated_pool() {
         long start = System.currentTimeMillis();
         
-        Executor executor =
+        var executor =
                 Executors.newFixedThreadPool(Math.min(300, 100),
                         r -> {
                             Thread t = new Thread(r);
@@ -45,13 +79,13 @@ public class ShopTest {
                             return t;
                         });
 
-        List<CompletableFuture<Price>> priceFutures = IntStream.range(1, 300)
+        var priceFutures = IntStream.range(1, 300)
                 .parallel()
                 .mapToObj(id -> CompletableFuture.supplyAsync(
                         () -> shop.getPrice(id), executor))
                 .collect(toList());
 
-        List<Price> prices = priceFutures.parallelStream()
+        var prices = priceFutures.parallelStream()
                 .map(CompletableFuture::join)
                 .collect(toList());
 
