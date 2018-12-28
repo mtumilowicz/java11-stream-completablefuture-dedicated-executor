@@ -53,7 +53,7 @@ public class ShopTest {
     public void naive_scalesBadly() {
         long start = System.currentTimeMillis();
         
-        var priceFutures = IntStream.range(1, 50)
+        var priceFutures = IntStream.range(1, 30)
                 .parallel()
                 .mapToObj(id -> CompletableFuture.supplyAsync(
                         () -> shop.getPrice(id)))

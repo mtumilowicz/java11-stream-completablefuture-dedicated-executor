@@ -3,11 +3,7 @@
  */
 class Shop {
     Price getPrice(int id) {
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            // not used
-        }
+        Delay.delay();
         return Price.of(id);
     }
 }
