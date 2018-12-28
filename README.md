@@ -89,5 +89,21 @@ _Reference_: https://www.amazon.com/Modern-Java-Action-functional-programming/dp
             .map(CompletableFuture::join)
             .collect(toList());
     ```
+    **time: 668 ms**
     
-# tests summary
+# explanation
+`CompletableFuture` and `parallel` streams **internally 
+use the same common pool** that by default has a fixed 
+number of threads equal to the one returned by 
+`Runtime.getRuntime().availableProcessors()`.
+
+So we decide to prepare dedicated executor for 
+`CompletableFuture` tasks. How we estimated
+the number of possible threads in a pool?
+From the given formula:
+
+* `Nthreads = NCPU * UCPU * (1 + W/C)`
+    * NCPU is the number of cores, available through 
+    `Runtime.getRuntime().availableProcessors()`
+    * UCPU is the target CPU utilization (between 0 and 1), and
+    * W/C is the ratio of wait time to compute time
