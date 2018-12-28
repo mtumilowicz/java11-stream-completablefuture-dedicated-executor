@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/mtumilowicz/java11-stream-completablefuture-dedicated-executor.svg?branch=master)](https://travis-ci.com/mtumilowicz/java11-stream-completablefuture-dedicated-executor)
+
 # java11-stream-completablefuture-dedicated-executor
 _Reference_: https://www.amazon.com/Modern-Java-Action-functional-programming/dp/1617293563
 
