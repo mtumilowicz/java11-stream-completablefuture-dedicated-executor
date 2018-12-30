@@ -4,7 +4,8 @@
 _Reference_: https://www.amazon.com/Modern-Java-Action-functional-programming/dp/1617293563
 
 # project description
-1. We could ask shop for a price of product (by id)
+1. We could ask shop for a price of a product 
+(by its id)
     ```
     class Shop {
         Price getPrice(int id) {
