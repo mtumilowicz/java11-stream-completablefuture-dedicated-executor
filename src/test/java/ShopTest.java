@@ -71,15 +71,17 @@ public class ShopTest {
     public void dedicated_pool() {
         long start = System.currentTimeMillis();
         
+        var size = 300;
+        
         var executor =
-                Executors.newFixedThreadPool(Math.min(300, 100),
+                Executors.newFixedThreadPool(Math.min(size, 100),
                         r -> {
                             Thread t = new Thread(r);
                             t.setDaemon(true);
                             return t;
                         });
 
-        var priceFutures = IntStream.range(1, 300)
+        var priceFutures = IntStream.range(1, size)
                 .parallel()
                 .mapToObj(id -> CompletableFuture.supplyAsync(
                         () -> shop.getPrice(id), executor))
